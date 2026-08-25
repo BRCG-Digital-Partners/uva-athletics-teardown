@@ -735,15 +735,15 @@ lifecycle_body = f'''
 
 # ─────────────────────────────────────────────────────────── EMAILS
 MAILS = [
-    ("ncstate.html", "NC State, Week 0", "Returning buyer &middot; live inventory, per-game CTAs, upgrade offer",
+    ("ncstate", "NC State, Week 0", "Returning buyer &middot; live inventory, per-game CTAs, upgrade offer",
      "Every figure read live", 3100),
-    ("win.html", "Post-game win", "First-time attendee &middot; multi-game step-up",
+    ("win", "Post-game win", "First-time attendee &middot; multi-game step-up",
      "90 min post-whistle", 1500),
-    ("loss.html", "Post-game loss", "Season-ticket holder &middot; loyalty, zero ask",
+    ("loss", "Post-game loss", "Season-ticket holder &middot; loyalty, zero ask",
      "The moment programs go quiet", 1500),
-    ("giving.html", "Hoos Giving Day", "Sabre Society donor &middot; live leaderboard and match window",
+    ("giving", "Hoos Giving Day", "Sabre Society donor &middot; live leaderboard and match window",
      "Real-time state beats copy", 1650),
-    ("welcome.html", "VAF first gift", "New donor &middot; five-part welcome, 30-day no-ask",
+    ("welcome", "VAF first gift", "New donor &middot; five-part welcome, 30-day no-ask",
      "T+2 days", 1650),
 ]
 
