@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lifecycle &middot; UVA Athletics teardown &middot; BRCG</title>
+<meta name="description" content="An unsolicited CRM teardown of the UVA Athletics fan email program, built from a real subscriber inbox and public ticketing data by BRCG in Charlottesville.">
+<meta name="robots" content="index,follow">
+<link rel="stylesheet" href="assets/portal.css">
+</head>
+<body>
+<header class="mast">
+  <div class="mast-in">
+    <img src="assets/brcg-logo-blue.png" alt="Blue Ridge Consulting Group" class="logo">
+    <span class="div"></span>
+    <span class="who">UVA Athletics teardown</span>
+    <nav class="nav"><a href="index.html">Overview</a><a href="audit.html">Audit</a><a href="data.html">Data</a><a href="apis.html">APIs</a><a href="lifecycle.html" aria-current="page">Lifecycle</a><a href="emails.html">Emails</a></nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="kicker">04 &middot; Lifecycle</div>
+    <h1>Eight sends the ticketing system <span class="q">could already be firing.</span></h1>
+    <p class="lede">
+      Each one names the field that drives it. None require new data collection, a platform migration or
+      leaving Eloqua. Seven home games remain after Week 0, which is seven live tests rather than a
+      planning cycle.
+    </p>
+  </div>
+
+  <section>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>#</th><th>Trigger &amp; signal</th><th>The send</th><th>Timing</th></tr></thead>
+      <tbody><tr>
+  <td class="m">01</td>
+  <td><strong>Proximity</strong><div class="m" style="color:var(--soft);margin-top:3px">T&minus;5 days, every home game</div></td>
+  <td><strong>Local, engaged, never bought</strong><p style="font-size:13.5px;margin-top:5px">&ldquo;You&rsquo;re 20 minutes from kickoff.&rdquo; One offer at the entry price, plus the parking instruction.</p></td>
+  <td class="m" style="white-space:nowrap">zip + orders_lifetime = 0 + opens &gt; 25%</td>
+</tr><tr>
+  <td class="m">02</td>
+  <td><strong>Abandon</strong><div class="m" style="color:var(--soft);margin-top:3px">T+2 hours, T+24 hours</div></td>
+  <td><strong>A real trigger, not a batch in trigger's clothing</strong><p style="font-size:13.5px;margin-top:5px">UVA already built this creative. The Aug 19 &ldquo;Finish Making Your Impact&rdquo; email exists and looks right. Wire it to the cart event.</p></td>
+  <td class="m" style="white-space:nowrap">evenue checkout session with no completed order</td>
+</tr><tr>
+  <td class="m">03</td>
+  <td><strong>Attendance</strong><div class="m" style="color:var(--soft);margin-top:3px">Within 90 minutes of the whistle</div></td>
+  <td><strong>Bought a ticket versus walked through the gate</strong><p style="font-size:13.5px;margin-top:5px">&ldquo;You were 1 of 64,217.&rdquo; Multi-game step-up to attendees. A separate, quieter note to no-shows.</p></td>
+  <td class="m" style="white-space:nowrap">barcode_scan on first_order</td>
+</tr><tr>
+  <td class="m">04</td>
+  <td><strong>Lapsed</strong><div class="m" style="color:var(--soft);margin-top:3px">T&minus;10 days, then once more</div></td>
+  <td><strong>Bought last season, nothing this season</strong><p style="font-size:13.5px;margin-top:5px">Name the real section and row. Same-or-better seat for the next home game.</p></td>
+  <td class="m" style="white-space:nowrap">last_order_season in F24/F25, no F26 order</td>
+</tr><tr>
+  <td class="m">05</td>
+  <td><strong>Partial plan</strong><div class="m" style="color:var(--soft);margin-top:3px">After game two</div></td>
+  <td><strong>Bought two games out of seven</strong><p style="font-size:13.5px;margin-top:5px">Complete the season, priced at the delta. Show what they own, show the gap, charge the difference.</p></td>
+  <td class="m" style="white-space:nowrap">orders_this_season vs home_games_total</td>
+</tr><tr>
+  <td class="m">06</td>
+  <td><strong>Parking</strong><div class="m" style="color:var(--soft);margin-top:3px">T&minus;10 and T&minus;3 days</div></td>
+  <td><strong>Holds tickets, holds no parking pass</strong><p style="font-size:13.5px;margin-top:5px">Attach the pass and explain the new digital system in one email.</p></td>
+  <td class="m" style="white-space:nowrap">has_ticket = true AND parking_sku = null</td>
+</tr><tr>
+  <td class="m">07</td>
+  <td><strong>Points</strong><div class="m" style="color:var(--soft);margin-top:3px">Quarterly, and at renewal</div></td>
+  <td><strong>Sitting just under a benefit threshold</strong><p style="font-size:13.5px;margin-top:5px">&ldquo;You&rsquo;re 41 points from priority parking.&rdquo; A progress bar and the exact gift that closes it.</p></td>
+  <td class="m" style="white-space:nowrap">priPtsTotal against the next tier</td>
+</tr><tr>
+  <td class="m">08</td>
+  <td><strong>Resale</strong><div class="m" style="color:var(--soft);margin-top:3px">On the listing event</div></td>
+  <td><strong>Listed their seats or transferred them away</strong><p style="font-size:13.5px;margin-top:5px">One game listed: help them sell it. Four or more: that is a renewal at risk, route it to a human at the VAF.</p></td>
+  <td class="m" style="white-space:nowrap">pendingTransfers + secondary listings</td>
+</tr></tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>A worked journey</h2>
+      <p class="sub">One fan, one season. Every step is entered by something they did, not by a date on a
+      marketing calendar.</p></div>
+    <div class="grid g3">
+      <div class="card"><div class="kick">Week &minus;1</div><h3>Win-back</h3>
+        <p>Bought in 2025, nothing yet in 2026. Email names Section 117 and offers the same seats at last
+        year&rsquo;s price. Entry: <code>orderhistory</code>.</p></div>
+      <div class="card"><div class="kick">Purchase +1h</div><h3>Confirmation that sells nothing</h3>
+        <p>Seats, kickoff, how digital parking works now, what to bring. Entry: order created.
+        Suppresses every promo for 48 hours.</p></div>
+      <div class="card"><div class="kick">Thursday</div><h3>Gameday logistics</h3>
+        <p>Gates, bag policy, ticket and parking retrieval, weather, traffic. Zero sell. Entry:
+        holds a ticket for a home game in 48 hours.</p></div>
+      <div class="card"><div class="kick">Whistle +90m</div><h3>Post-attendance</h3>
+        <p>Scanned in, so the recap is true for them. Attendance count, next home game, upgrade offer if
+        one exists. Entry: <code>barcode_scan</code>.</p></div>
+      <div class="card"><div class="kick">Game +3d</div><h3>Points and progress</h3>
+        <p>Balance after this purchase, distance to the next benefit tier. The number Paciolan already
+        computes and nobody sees. Entry: points delta.</p></div>
+      <div class="card"><div class="kick">Season end</div><h3>Renewal, priced honestly</h3>
+        <p>Games attended, what they spent one at a time, what the season plan would have cost. Entry:
+        final home game scanned.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>How to run it so the numbers mean something</h2></div>
+    <div class="grid g3">
+      <div class="card"><div class="kick">Holdout</div><h3>10% of every trigger</h3>
+        <p>Withhold a random tenth from each behavioural send. Without it, incrementality is a guess and
+        every win gets attributed to the email that happened to arrive last.</p></div>
+      <div class="card"><div class="kick">Governance</div><h3>Frequency cap across teams</h3>
+        <p>On Aug 19 two emails went out thirteen hours apart from two different teams. A shared cap and a
+        priority order stops that without a meeting.</p></div>
+      <div class="card"><div class="kick">Suppression</div><h3>Behaviour beats calendar</h3>
+        <p>Anyone in a triggered flow drops out of the broadcast for its duration. Buyers stop seeing
+        acquisition offers the moment they buy.</p></div>
+    </div>
+    <div class="note" style="margin-top:16px">
+      <p><strong>Sequencing.</strong> Gameday and digital parking ship first because they need no new data
+      and they deflect support volume on the first Saturday of a new parking system. Field activation
+      (first name, sport, zip) is second because it is a template change. Win-back and the real behavioural
+      triggers are third because they carry the largest revenue and the most build.</p>
+    </div>
+  </section>
+</div>
+
+<div class="wrap"><div class="pager"><a href="apis.html"><div class="k">Previous</div><div class="t">APIs + templates</div></a><a href="emails.html"><div class="k">Next</div><div class="t">The emails</div></a></div></div>
+<footer class="foot">
+  <div class="foot-in">
+    <span>Blue Ridge Consulting Group &middot; Charlottesville, VA</span>
+    <span>&middot;</span>
+    <a href="https://brcg.co">brcg.co</a>
+    <span>&middot;</span>
+    <a href="mailto:kodie@brcg.co">kodie@brcg.co</a>
+    <span>&middot;</span>
+    <span>Built from public sources &middot; figures read Aug 25, 2026</span>
+  </div>
+</footer>
+</body>
+</html>

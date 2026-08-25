@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The audit &middot; UVA Athletics teardown &middot; BRCG</title>
+<meta name="description" content="An unsolicited CRM teardown of the UVA Athletics fan email program, built from a real subscriber inbox and public ticketing data by BRCG in Charlottesville.">
+<meta name="robots" content="index,follow">
+<link rel="stylesheet" href="assets/portal.css">
+</head>
+<body>
+<header class="mast">
+  <div class="mast-in">
+    <img src="assets/brcg-logo-blue.png" alt="Blue Ridge Consulting Group" class="logo">
+    <span class="div"></span>
+    <span class="who">UVA Athletics teardown</span>
+    <nav class="nav"><a href="index.html">Overview</a><a href="audit.html" aria-current="page">Audit</a><a href="data.html">Data</a><a href="apis.html">APIs</a><a href="lifecycle.html">Lifecycle</a><a href="emails.html">Emails</a></nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="kicker">01 &middot; The audit</div>
+    <h1>78 emails. One sender. <span class="q">Zero segmentation.</span></h1>
+    <p class="lede">
+      Pulled from a live UVA Athletics subscriber inbox between Oct 22, 2025 and Aug 24, 2026. Every send
+      arrives from <code>updates@go.virginiasports.com</code> on Oracle Eloqua. Cadence is roughly one
+      every four days, across eight sports, to one person, regardless of stated interest.
+    </p>
+    <div class="rail"><div class="cell"><div class="lab">Total sends</div><div class="val">78</div><div class="note">306 days. 75 from Eloqua, 2 CavFutures, 1 personal Outlook</div></div><div class="cell"><div class="lab">Pre-season push</div><div class="val">22</div><div class="note">Jun 1 &rarr; Aug 24. Ten of them in August alone</div></div><div class="cell"><div class="lab">Personalization</div><div class="val hl">0%</div><div class="note">First name is a required field and appears in no send</div></div><div class="cell"><div class="lab">Sending stacks</div><div class="val">3</div><div class="note">Eloqua, personal Outlook, Mailchimp. Zero integration</div></div></div>
+  </div>
+
+  <section>
+    <div class="sec-head">
+      <h2>The finding that reframes everything</h2>
+      <p class="sub">UVA&rsquo;s own preference centre, linked in the footer of all 78 emails, already collects
+      the segmentation the program is missing. It writes to Eloqua. Nothing reads it back.</p>
+    </div>
+    <div class="grid g3">
+      <div class="card">
+        <div class="kick">Identity collected</div>
+        <p><strong>First name</strong> (required)<br><strong>Last name</strong> (required)<br>
+        Zip / postal code<br>Birthday (MM/DD/YYYY)</p>
+      </div>
+      <div class="card">
+        <div class="kick">Content categories</div>
+        <p>Ticket Information &amp; Special Offers<br>Virginia Athletics Foundation<br>
+        Virginia Sports Properties<br>Jeff White &middot; Weekly Hoo Mail<br><strong>Game Day Info</strong></p>
+      </div>
+      <div class="card">
+        <div class="kick">Sport preferences</div>
+        <p>All Sports, Football, Baseball, Softball, Volleyball, Men&rsquo;s &amp; Women&rsquo;s Basketball,
+        Men&rsquo;s &amp; Women&rsquo;s Lacrosse, Men&rsquo;s &amp; Women&rsquo;s Soccer, All Other Olympic Sports.</p>
+        <p class="m" style="margin-top:10px;color:var(--soft)">&rarr; hiddenField&ndash;hiddenField12</p>
+      </div>
+    </div>
+    <div class="note warn" style="margin-top:16px">
+      <p><strong>And the one control that does work is the blunt one.</strong> Every footer reads
+      &ldquo;by unsubscribing you are opting out of ALL email communications from University of Virginia
+      Athletics.&rdquo; Granular preferences on the way in, a single global switch on the way out.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Seven things the Week 0 run-up left on the table</h2>
+      <p class="sub">Between June 1 and August 24 the program sent 22 emails into the highest-intent selling
+      window of the year. Here is what was not in them.</p>
+    </div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>#</th><th>Gap</th><th>What was missing</th><th>The send</th></tr></thead>
+      <tbody>
+        <tr><td class="m">01</td><td><strong>Parking</strong></td>
+          <td>Parking went digital on Jun 24. Hangtags gone for football, both basketballs and baseball.
+          Announced as a news post, 66 days before kickoff. Never mentioned in any of the 22 emails.</td>
+          <td>Permit holders only, T&minus;21 and T&minus;5. Screenshot walkthrough and app deep link.</td></tr>
+        <tr><td class="m">02</td><td><strong>Gameday</strong></td>
+          <td>The preference centre offers a &ldquo;Game Day Info&rdquo; category. Subscribers opt into it.
+          As of four days out, the last send was a tailgate upsell.</td>
+          <td>Thursday before each home game, ticket holders. Gates, bags, parking retrieval, weather. Zero sell.</td></tr>
+        <tr><td class="m">03</td><td><strong>Win-back</strong></td>
+          <td>A 2024 season-ticket holder who did not renew got the identical 22 sends as someone who has
+          never purchased. Paciolan knows the difference.</td>
+          <td>Reference the actual section and row. Same-or-better seat for Week 0.</td></tr>
+        <tr><td class="m">04</td><td><strong>Sport</strong></td>
+          <td>Men&rsquo;s basketball schedule news went to the whole file on Aug 20, nine days before a
+          football home opener. Twelve sport preferences sit unused in Eloqua.</td>
+          <td>One trigger, split on the sport-affinity field already on the record.</td></tr>
+        <tr><td class="m">05</td><td><strong>Geography</strong></td>
+          <td>Zip is collected. A fan in Charlottesville and a fan in Northern Virginia got the same
+          Week 0 push for a 3:30 Saturday kickoff.</td>
+          <td>Drive-time framing by radius. Inside 30 miles, 60&ndash;120, and beyond.</td></tr>
+        <tr><td class="m">06</td><td><strong>Identity</strong></td>
+          <td>First name is a required field on the subscription form and appears in zero sends. The
+          Aug 18 letter from the Director of Athletics opens &ldquo;Wahoo Nation.&rdquo;</td>
+          <td>A one-line template change with no data work behind it.</td></tr>
+        <tr><td class="m">07</td><td><strong>Support</strong></td>
+          <td>The Aug 24 game-week email routes questions to a ticket office open Monday to Friday,
+          9 to 5. The game is Saturday.</td>
+          <td>Self-serve block plus a gameday SMS line. Deflect the call rather than route it somewhere closed.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>What the calendar proves</h2>
+    </div>
+    <div class="grid g4">
+      <div class="card"><div class="num">78</div><div class="kick" style="margin:9px 0 0">Sends mapped</div>
+        <p style="margin-top:8px">306 days. Two peaks: basketball in Jan&ndash;Feb, football in August.</p></div>
+      <div class="card"><div class="num">~3.9d</div><div class="kick" style="margin:9px 0 0">Average gap</div>
+        <p style="margin-top:8px">August ran one every 2.3 days, including two on Aug 19 thirteen hours apart.</p></div>
+      <div class="card"><div class="num">0</div><div class="kick" style="margin:9px 0 0">Behavioural triggers</div>
+        <p style="margin-top:8px">The Aug 19 &ldquo;finish your gift&rdquo; email reached a subscriber with no
+        abandoned gift, which makes it a batch send wearing a trigger&rsquo;s copy.</p></div>
+      <div class="card"><div class="num">8</div><div class="kick" style="margin:9px 0 0">Sports to one inbox</div>
+        <p style="margin-top:8px">Football, both basketballs, both lacrosses, baseball, softball, volleyball.</p></div>
+    </div>
+  </section>
+</div>
+
+<div class="wrap"><div class="pager"><a href="index.html"><div class="k">Previous</div><div class="t">Teardown</div></a><a href="data.html"><div class="k">Next</div><div class="t">Data architecture</div></a></div></div>
+<footer class="foot">
+  <div class="foot-in">
+    <span>Blue Ridge Consulting Group &middot; Charlottesville, VA</span>
+    <span>&middot;</span>
+    <a href="https://brcg.co">brcg.co</a>
+    <span>&middot;</span>
+    <a href="mailto:kodie@brcg.co">kodie@brcg.co</a>
+    <span>&middot;</span>
+    <span>Built from public sources &middot; figures read Aug 25, 2026</span>
+  </div>
+</footer>
+</body>
+</html>

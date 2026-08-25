@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teardown &middot; UVA Athletics teardown &middot; BRCG</title>
+<meta name="description" content="An unsolicited CRM teardown of the UVA Athletics fan email program, built from a real subscriber inbox and public ticketing data by BRCG in Charlottesville.">
+<meta name="robots" content="index,follow">
+<link rel="stylesheet" href="assets/portal.css">
+</head>
+<body>
+<header class="mast">
+  <div class="mast-in">
+    <img src="assets/brcg-logo-blue.png" alt="Blue Ridge Consulting Group" class="logo">
+    <span class="div"></span>
+    <span class="who">UVA Athletics teardown</span>
+    <nav class="nav"><a href="index.html" aria-current="page">Overview</a><a href="audit.html">Audit</a><a href="data.html">Data</a><a href="apis.html">APIs</a><a href="lifecycle.html">Lifecycle</a><a href="emails.html">Emails</a></nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="kicker">Unsolicited teardown &middot; built in Charlottesville</div>
+    <h1>UVA Athletics runs great campaigns on top of <span class="q">no lifecycle at all.</span></h1>
+    <p class="lede">
+      Kodie Critzer and Henry Pollard founded BRCG here. Kodie went to UVA. Nobody asked us for this.
+      We built it because Virginia Athletics is the client we would most like to work with, and because
+      the fan email program is 78 sends in 10 months of genuinely well-run campaign operations with nothing
+      underneath them. Every figure on this site was read from UVA&rsquo;s own public systems.
+    </p>
+    <div class="rail"><div class="cell"><div class="lab">Sends mapped</div><div class="val">78</div><div class="note">Oct 22, 2025 &rarr; Aug 24, 2026, one real subscriber inbox</div></div><div class="cell"><div class="lab">Seats unsold, Week 0</div><div class="val hl">7,549</div><div class="note">of 65,181 against NC State, four days out</div></div><div class="cell"><div class="lab">Unsold, full season</div><div class="val">156,879</div><div class="note">65.6% of the season sold across seven home games</div></div><div class="cell"><div class="lab">Lifecycle triggers</div><div class="val">0</div><div class="note">No welcome, abandon, post-attendance, win-back or re-engagement</div></div></div>
+  </div>
+
+  <section>
+    <div class="sec-head">
+      <h2>The one-paragraph version</h2>
+    </div>
+    <div class="grid g3">
+      <div class="card">
+        <div class="kick">What works</div>
+        <h3>The campaign operation</h3>
+        <p>78 sends in 10 months with no missed week. Real price laddering, real partner revenue,
+        a consistent template that never breaks. Somebody is shipping on deadline every single week
+        and the offers are good.</p>
+      </div>
+      <div class="card">
+        <div class="kick">What is missing</div>
+        <h3>Everything underneath it</h3>
+        <p>Not one send in 306 days was triggered by subscriber behaviour. No welcome, no abandon,
+        no post-attendance, no win-back. Every email is a manually scheduled broadcast to the whole file.</p>
+      </div>
+      <div class="card">
+        <div class="kick">Why it matters</div>
+        <h3>The data is already there</h3>
+        <p>Paciolan holds every order, seat, scan and points balance. Eloqua holds first name, zip,
+        birthday and twelve sport preferences. None of it reaches a send. This is a plumbing problem,
+        not a budget problem.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="dark">
+      <div class="kick">Live inventory &middot; read Aug 25, 2026 &middot; four days to kickoff</div>
+      <div class="big">7,549</div>
+      <p style="margin-top:14px;max-width:64ch">
+        Seats still unsold for the NC State home opener, against a capacity of 65,181, with
+        <code style="background:rgba(255,255,255,.1);border-color:transparent;color:#fff">SOLD_OUT: false</code>
+        and all six price levels open. UVA has been running a campaign called &ldquo;Sell Out Scott&rdquo;
+        since July 10. Nothing in the email program reads this number.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>The whole season, by how full it is</h2>
+      <p class="sub">Per-game availability from <code>pac-api/catalog/eventDetailMPT</code>. NC State is the
+      outlier at 88.4%. Every other home game sits around 61%.</p>
+    </div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th></th><th>Opponent</th><th>Kickoff</th><th>Sold</th>
+      <th style="text-align:right">%</th><th style="text-align:right">Seats left</th></tr></thead>
+      <tbody><tr style="background:#FFF6F2">
+          <td><img src="https://s3.us-west-2.amazonaws.com/pachtml-production/www/virginia/images/logos/NCState.png" alt="" style="width:26px;height:auto"></td>
+          <td><strong>NC State</strong></td>
+          <td class="m">Sat Aug 29 &middot; 3:30 PM</td>
+          <td style="min-width:130px"><div class="bar"><i style="width:88.4%"></i></div></td>
+          <td class="m" style="text-align:right;white-space:nowrap">88.4%</td>
+          <td class="m" style="text-align:right;white-space:nowrap">7,549</td>
+        </tr><tr>
+          <td><img src="https://s3.us-west-2.amazonaws.com/pachtml-production/www/virginia/images/logos/NorfolkState.png" alt="" style="width:26px;height:auto"></td>
+          <td><strong>Norfolk State</strong></td>
+          <td class="m">Fri Sep 11 &middot; 7:00 PM</td>
+          <td style="min-width:130px"><div class="bar"><i style="width:60.4%"></i></div></td>
+          <td class="m" style="text-align:right;white-space:nowrap">60.4%</td>
+          <td class="m" style="text-align:right;white-space:nowrap">25,816</td>
+        </tr><tr>
+          <td><img src="https://s3.us-west-2.amazonaws.com/pachtml-production/www/virginia/images/logos/Delaware.png" alt="" style="width:26px;height:auto"></td>
+          <td><strong>Delaware</strong></td>
+          <td class="m">Sat Sep 26 &middot; TBD</td>
+          <td style="min-width:130px"><div class="bar"><i style="width:61.7%"></i></div></td>
+          <td class="m" style="text-align:right;white-space:nowrap">61.7%</td>
+          <td class="m" style="text-align:right;white-space:nowrap">24,943</td>
+        </tr><tr>
+          <td><img src="https://s3.us-west-2.amazonaws.com/pachtml-production/www/virginia/images/logos/Syracuse.png" alt="" style="width:26px;height:auto"></td>
+          <td><strong>Syracuse</strong></td>
+          <td class="m">Sat Oct 10 &middot; TBD</td>
+          <td style="min-width:130px"><div class="bar"><i style="width:61.6%"></i></div></td>
+          <td class="m" style="text-align:right;white-space:nowrap">61.6%</td>
+          <td class="m" style="text-align:right;white-space:nowrap">25,048</td>
+        </tr><tr>
+          <td><img src="https://s3.us-west-2.amazonaws.com/pachtml-production/www/virginia/images/logos/Duke.png" alt="" style="width:26px;height:auto"></td>
+          <td><strong>Duke</strong></td>
+          <td class="m">Fri Oct 23 &middot; 7:00 PM</td>
+          <td style="min-width:130px"><div class="bar"><i style="width:64.7%"></i></div></td>
+          <td class="m" style="text-align:right;white-space:nowrap">64.7%</td>
+          <td class="m" style="text-align:right;white-space:nowrap">22,999</td>
+        </tr><tr>
+          <td><img src="https://s3.us-west-2.amazonaws.com/pachtml-production/www/virginia/images/logos/California.png" alt="" style="width:26px;height:auto"></td>
+          <td><strong>California</strong></td>
+          <td class="m">Sat Nov 14 &middot; TBD</td>
+          <td style="min-width:130px"><div class="bar"><i style="width:61.0%"></i></div></td>
+          <td class="m" style="text-align:right;white-space:nowrap">61.0%</td>
+          <td class="m" style="text-align:right;white-space:nowrap">25,388</td>
+        </tr><tr>
+          <td><img src="https://s3.us-west-2.amazonaws.com/pachtml-production/www/virginia/images/logos/NorthCarolina.png" alt="" style="width:26px;height:auto"></td>
+          <td><strong>North Carolina</strong></td>
+          <td class="m">Sat Nov 21 &middot; TBD</td>
+          <td style="min-width:130px"><div class="bar"><i style="width:61.4%"></i></div></td>
+          <td class="m" style="text-align:right;white-space:nowrap">61.4%</td>
+          <td class="m" style="text-align:right;white-space:nowrap">25,136</td>
+        </tr></tbody></table></div>
+    <p class="sub" style="margin-top:14px;margin-bottom:0">
+      Seven home games &middot; 456,261 seats &middot; 65.6% sold &middot;
+      <strong>156,879 still available across the season</strong>
+    </p>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>What is on this site</h2>
+    </div>
+    <div class="grid g2">
+      <div class="card"><div class="kick">01</div><h3><a href="audit.html">The audit</a></h3>
+        <p>All 78 sends, the 22-email run-up to Saturday, the preference centre finding, and the seven
+        things the pre-season push left on the table.</p></div>
+      <div class="card"><div class="kick">02</div><h3><a href="data.html">Data architecture</a></h3>
+        <p>The three sending stacks, what each system holds today, and the shape of the lifecycle layer
+        that sits on top without replacing any of them.</p></div>
+      <div class="card"><div class="kick">03</div><h3><a href="apis.html">APIs and data templates</a></h3>
+        <p>The real Paciolan endpoints, real response payloads, and the merge-field contract a lifecycle
+        ESP would bind to.</p></div>
+      <div class="card"><div class="kick">04</div><h3><a href="lifecycle.html">Lifecycle</a></h3>
+        <p>Eight triggers the ticketing system could already be firing, each mapped to the field behind
+        it, with entry, timing, suppression and the measure.</p></div>
+      <div class="card"><div class="kick">05</div><h3><a href="emails.html">The emails</a></h3>
+        <p>Five sends built on UVA&rsquo;s real Eloqua template, including a full Week 0 email where every
+        figure was read live from the ticketing system.</p></div>
+      <div class="card tint"><div class="kick">Contact</div><h3>We would love to work with you</h3>
+        <p>No gate, no form, no NDA. If anyone at UVA Athletics or the VAF wants the send map or the
+        segment definitions, they are yours for the asking.
+        <a href="mailto:kodie@brcg.co">kodie@brcg.co</a></p></div>
+    </div>
+  </section>
+</div>
+
+<div class="wrap"><div class="pager"><a href="audit.html"><div class="k">Next</div><div class="t">The audit</div></a></div></div>
+<footer class="foot">
+  <div class="foot-in">
+    <span>Blue Ridge Consulting Group &middot; Charlottesville, VA</span>
+    <span>&middot;</span>
+    <a href="https://brcg.co">brcg.co</a>
+    <span>&middot;</span>
+    <a href="mailto:kodie@brcg.co">kodie@brcg.co</a>
+    <span>&middot;</span>
+    <span>Built from public sources &middot; figures read Aug 25, 2026</span>
+  </div>
+</footer>
+</body>
+</html>
