@@ -39,7 +39,7 @@
     { p: 'catalog',   t: 'Email catalog',  s: '27 sends this supports' },
     { p: 'lifecycle', t: 'Lifecycle',      s: 'Eight triggers already possible' },
     { p: 'emails',    t: 'Email library',  s: 'Five built emails' },
-    { p: 'creative',  t: 'Creative system', s: '22 season assets' },
+    { p: 'creative',  t: 'Creative system', s: '26 season assets' },
     { g: 'Next' },
     { p: 'roadmap',   t: 'Roadmap',        s: 'Three pilots, this season' },
     { p: 'method',    t: 'Method & sources', s: 'Live vs illustrative' }
