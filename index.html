@@ -806,8 +806,238 @@
     which is the part that is partner-gated and which UVA already has a commercial relationship for. These
     endpoints prove the data exists and is well structured. They are not the integration path.</div>
   </div>
+</section><section class="panel" id="p-dataplan">
+  <div class="eyebrow">06 &middot; Data plan</div>
+  <h2 class="ttl">Paciolan already stores the join key.<br>It just never leaves the building.</h2>
+  <p class="lede">
+    Field-by-field implementation spec. How the identity match works, what every Eloqua field is sourced from,
+    the schema, the sync jobs, and the data-quality traps we found in the live responses that would break a
+    naive build.
+  </p>
+
+  <div class="sec verdict">
+    <div class="eyebrow">The answer to the obvious question</div>
+    <h3>Yes, Paciolan captures email. In five places, and one of them is already a lookup table.</h3>
+    <p>The patron record returns <span class="fld">PtrnEvLoginInfoVos</span>, an array of
+    <span class="fld">&#123; patronId, email, acctLinkedFl &#125;</span>.
+    <strong>That is an email-to-patron-ID map Paciolan already maintains.</strong> It is the single most useful
+    object in the whole surface and nothing downstream uses it.</p>
+    <p>Email also appears as <span class="fld">accounts.loginEmail</span>, as
+    <span class="fld">primaryContact.emails[]</span> and <span class="fld">contacts[].emails[]</span> (each entry
+    carrying <span class="fld">value1</span>, <span class="fld">value2</span> and a <span class="fld">label</span>,
+    so one contact can hold two addresses), and as <span class="fld">patronVo.PtrnEmailVos[]</span>.</p>
+    <p><strong>So the match is feasible, but it is not one to one.</strong> The shape is Account &rarr; Contacts
+    &rarr; multiple emails each, and season tickets frequently sit on one account with a household attached.
+    A plan that assumes one email equals one fan will silently mis-key a meaningful slice of the most valuable
+    segment UVA has.</p>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><div class="eyebrow">Step 1</div><h3>Identity resolution, as a waterfall</h3>
+      <p>Run in order, stop at the first confident hit, and record which tier produced the match so quality can
+      be measured per tier rather than as one blended number.</p></div>
+    <div class="card"><div class="tw"><table>
+      <thead><tr><th style="width:56px">Tier</th><th style="width:28%">Match on</th><th>Behaviour</th>
+        <th style="width:118px">Confidence</th></tr></thead>
+      <tbody>
+        <tr><td class="num">1</td><td><span class="fld">PtrnEvLoginInfoVos.email</span></td>
+          <td>Direct lookup against Paciolan&rsquo;s own association between a login email and a patron ID.
+          Respect <span class="fld">acctLinkedFl</span> and skip unlinked rows.</td>
+          <td><span class="tag good">Authoritative</span></td></tr>
+        <tr><td class="num">2</td><td><span class="fld">accounts.loginEmail</span></td>
+          <td>Account login. Resolve through <span class="fld">primaryContactId</span> to the patron.</td>
+          <td><span class="tag good">High</span></td></tr>
+        <tr><td class="num">3</td><td><span class="fld">primaryContact.emails[].value1 / value2</span></td>
+          <td>Secondary addresses on the primary contact. Common for alumni who bought with a personal address
+          and subscribed with a work one.</td>
+          <td><span class="tag good">High</span></td></tr>
+        <tr><td class="num">4</td><td><span class="fld">contacts[].emails[]</span></td>
+          <td>Other contacts on the same account. This is the household case. Map to the contact, keep the
+          account ID, and flag <span class="fld">is_account_holder = false</span> so the email cannot claim
+          seats that belong to a spouse.</td>
+          <td><span class="tag warn">Needs a flag</span></td></tr>
+        <tr><td class="num">5</td><td>Surname + zip + last four of phone</td>
+          <td>Last resort for the remainder. Review a sample by hand before trusting it, and never let a tier-5
+          match drive a financial statement like a points balance.</td>
+          <td><span class="tag warn">Review only</span></td></tr>
+      </tbody></table></div></div>
+    <div class="banner warn" style="margin-top:14px"><b>Three collisions to decide before the first run.</b>
+    One email on several contacts, which is a household sharing an address. One contact carrying two addresses
+    in <span class="fld">value1</span> and <span class="fld">value2</span>. And an Eloqua contact matching a
+    non-primary contact on an account. Each needs a written rule rather than a best guess, because the wrong
+    call sends somebody else&rsquo;s seat history to the wrong person.</div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><div class="eyebrow">Step 2</div><h3>Source to target, field by field</h3></div>
+    <div class="card"><div class="tw"><table>
+      <thead><tr><th style="width:19%">Eloqua field</th><th style="width:12%">Type</th>
+        <th style="width:27%">Source</th><th>Transform</th></tr></thead>
+      <tbody>
+        <tr><td><span class="fld">pac_patron_id</span></td><td class="num">Text</td>
+          <td><span class="fld">patronVo.patronId</span></td>
+          <td>Keep as a string. It is returned as text and leading zeros matter.</td></tr>
+        <tr><td><span class="fld">pac_account_id</span></td><td class="num">Text</td>
+          <td><span class="fld">accounts.key.id</span></td>
+          <td>Lets you group a household without merging the people in it.</td></tr>
+        <tr><td><span class="fld">is_account_holder</span></td><td class="num">Boolean</td>
+          <td>Derived, tiers 1&ndash;3 versus tier 4</td>
+          <td>Gates whether a send may reference seats or a points balance at all.</td></tr>
+        <tr><td><span class="fld">priority_points</span></td><td class="num">Number</td>
+          <td><span class="fld">priPtsTotal</span></td>
+          <td><b style="color:hsl(var(--im-fg))">Reject negatives.</b> A new account returns a sentinel, not a
+          balance. See the traps below.</td></tr>
+        <tr><td><span class="fld">points_to_next_tier</span></td><td class="num">Number</td>
+          <td>Derived from points and the VAF benefit table</td>
+          <td>Null at top tier, so the module suppresses instead of rendering a zero.</td></tr>
+        <tr><td><span class="fld">lifetime_orders</span></td><td class="num">Number</td>
+          <td><span class="fld">orderhistory.events[]</span></td>
+          <td>Count from the extract, not the fan-facing API. See the 12-month cap.</td></tr>
+        <tr><td><span class="fld">last_order_season</span></td><td class="num">Text</td>
+          <td><span class="fld">orderhistory</span> &rarr; SEASONCD</td>
+          <td>F24, F25, F26. Drives the entire win-back trigger.</td></tr>
+        <tr><td><span class="fld">last_seat</span></td><td class="num">Text</td>
+          <td>Order line: section, row, seat</td>
+          <td>Format once, centrally. Never let a template concatenate it.</td></tr>
+        <tr><td><span class="fld">games_attended_season</span></td><td class="num">Number</td>
+          <td>Gate scans</td>
+          <td>Scanned, not purchased. A no-show is a different person from an attendee.</td></tr>
+        <tr><td><span class="fld">parking_sku</span></td><td class="num">Text</td>
+          <td>Order add-ons</td>
+          <td>Distinguish a true null from a failed sync. A missing value must never read as no pass.</td></tr>
+        <tr><td><span class="fld">sport_affinity</span></td><td class="num">Multi-select</td>
+          <td>Eloqua <span class="fld">hiddenField&ndash;hiddenField12</span></td>
+          <td>Already collected. Nothing to fetch, only to start reading.</td></tr>
+        <tr><td><span class="fld">drive_time_band</span></td><td class="num">Text</td>
+          <td>Eloqua zip, or the patron address</td>
+          <td>Bucket to under 30, 30&ndash;60, 60&ndash;120, over 120 miles. Never store a raw distance.</td></tr>
+        <tr><td><span class="fld">vaf_tier</span></td><td class="num">Text</td>
+          <td><span class="fld">memberships.items[]</span></td>
+          <td>Also gates seat and parking eligibility.</td></tr>
+        <tr><td><span class="fld">is_student</span></td><td class="num">Boolean</td>
+          <td><span class="fld">patronVo.isStudent</span></td>
+          <td>Returned as 0 or 1, not a boolean. Cast explicitly.</td></tr>
+        <tr><td><span class="fld">can_transfer</span> / <span class="fld">can_exchange</span></td><td class="num">Boolean</td>
+          <td><span class="fld">transferfl</span>, <span class="fld">exchfl</span>, <span class="fld">returnfl</span></td>
+          <td>Suppress any transfer or resale CTA the account is not entitled to use.</td></tr>
+      </tbody></table></div></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><div class="eyebrow">Step 3</div><h3>The objects</h3></div>
+    <div class="cmp">
+      <div class="col">
+        <span class="tag blue">Custom data objects, per patron</span>
+        <h3>One row per thing that happened</h3>
+        <ul>
+          <li><b>Ticket Orders</b> patron, event, season, section, row, seat, price level, price type, quantity,
+          add-ons, order date, days before event, channel, scanned flag</li>
+          <li><b>Transfers and listings</b> patron, event, action, count, timestamp. The renewal-risk signal</li>
+          <li><b>Gifts</b> patron, amount, designation, date, appeal, round-up flag</li>
+        </ul>
+      </div>
+      <div class="col next">
+        <span class="tag brand">Shared object, not per contact</span>
+        <h3>Event Inventory</h3>
+        <ul>
+          <li>event code, name, opponent logo, facility, kickoff local, kickoff UTC, time-confirmed flag</li>
+          <li>available, capacity, percent sold, sold-out flag</li>
+          <li>on-sale from, on-sale to, promo flag, bill-plan flag</li>
+          <li>price levels available, donation ladder</li>
+        </ul>
+        <p class="note" style="margin-top:12px">Seven rows for football, refreshed hourly. Every email looks it
+        up rather than each contact carrying a copy, which is what makes the live-inventory module effectively
+        free to run.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><div class="eyebrow">Step 4</div><h3>The jobs</h3></div>
+    <div class="card"><div class="tw"><table>
+      <thead><tr><th style="width:180px">Job</th><th style="width:150px">Cadence</th><th>Reads</th>
+        <th style="width:22%">Writes</th></tr></thead>
+      <tbody>
+        <tr><td><strong>identity-sync</strong></td><td class="num">Nightly 02:00</td>
+          <td>Paciolan patron extract, matched through the five-tier waterfall</td>
+          <td>pac_patron_id, pac_account_id, is_account_holder, match_tier</td></tr>
+        <tr><td><strong>patron-sync</strong></td><td class="num">Nightly 02:30</td>
+          <td>Points, memberships, entitlement flags and student flag for every mapped patron</td>
+          <td>Contact fields</td></tr>
+        <tr><td><strong>orders-sync</strong></td><td class="num">Nightly 03:00</td>
+          <td>Order history and add-ons from the extract</td>
+          <td>Ticket Orders CDO plus derived contact fields</td></tr>
+        <tr><td><strong>scan-sync</strong></td><td class="num">Within 2h of gates closing</td>
+          <td>Gate scans for the event just played</td>
+          <td>Ticket Orders scanned flag, games_attended_season</td></tr>
+        <tr><td><strong>inventory-sync</strong></td><td class="num">Hourly</td>
+          <td><span class="fld">eventDetailMPT</span> and <span class="fld">seat-availability</span> per event</td>
+          <td>Event Inventory CDO. No personal data in the request or the response</td></tr>
+        <tr><td><strong>upgrade-lookup</strong></td><td class="num">At send</td>
+          <td><span class="fld">order/ballena/upgrades</span> for the contact in the send</td>
+          <td>Nothing. Rendered inline by the Cloud Content service</td></tr>
+      </tbody></table></div></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><div class="eyebrow">Step 5</div><h3>Traps we found in the live responses</h3>
+      <p>Every one of these is real and observed. Each would produce a wrong email rather than an error, which
+      is the expensive kind of bug.</p></div>
+    <div class="card"><div class="tw"><table>
+      <thead><tr><th style="width:24%">Trap</th><th>What happens</th><th style="width:30%">Rule</th></tr></thead>
+      <tbody>
+        <tr><td><strong>The points sentinel</strong></td>
+          <td><span class="fld">priPtsTotal</span> returns a large negative sentinel for an account with no
+          history rather than zero or null. Merge it raw and you tell a fan they have minus seven million
+          points.</td>
+          <td>Reject any negative, coalesce to zero, and suppress the module below a real threshold.</td></tr>
+        <tr><td><strong>Amounts in cents</strong></td>
+          <td>The donation ladder returns <span class="fld">25000</span> for $250.</td>
+          <td>Divide by 100 at ingest, never in the template.</td></tr>
+        <tr><td><strong>Two event timestamps</strong></td>
+          <td><span class="fld">EVENTDT</span> is UTC and <span class="fld">EVENTDTFAC</span> is facility-local.
+          For NC State they differ by four hours.</td>
+          <td>Display from FAC, schedule from UTC, and never mix the two.</td></tr>
+        <tr><td><strong>Kickoff not yet set</strong></td>
+          <td>Unannounced times come back as midnight local, which renders as a real 12:00 AM kickoff.</td>
+          <td>Respect <span class="fld">HIDE_TIME</span> and print TBD.</td></tr>
+        <tr><td><strong>The 12-month history cap</strong></td>
+          <td><span class="fld">maxOrderHistoryMonthRange</span> is 12, so the fan-facing API cannot see a 2024
+          buyer. That is shorter than the win-back window it would serve.</td>
+          <td>Source order history from the extract, not the account API.</td></tr>
+        <tr><td><strong>Available versus sellable</strong></td>
+          <td>The seat-availability response carries <span class="fld">holdCds</span> separately, so it is not
+          certain that <span class="fld">AVAILABLE</span> nets out held inventory.</td>
+          <td><b style="color:hsl(var(--im-fg))">Verify against a box-office number before any send quotes it.</b>
+          Flagged as open rather than assumed.</td></tr>
+        <tr><td><strong>Booleans that are not</strong></td>
+          <td><span class="fld">isStudent</span> comes back as 0 or 1, and the entitlement flags as strings.</td>
+          <td>Cast explicitly at ingest.</td></tr>
+        <tr><td><strong>Null versus missing</strong></td>
+          <td>A failed parking sync and a fan with genuinely no pass both look like an empty field.</td>
+          <td>Write a sync timestamp per field group and suppress on stale rather than on empty.</td></tr>
+      </tbody></table></div></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><div class="eyebrow">Step 6</div><h3>Governance</h3></div>
+    <div class="grid g3">
+      <div class="card"><div class="eyebrow">What never moves</div>
+        <p class="note" style="margin-top:10px">No card data, no bank details, no full addresses. Zip is bucketed
+        to a drive-time band at ingest and the raw value is not written. The inventory service carries no
+        personal data in either direction.</p></div>
+      <div class="card"><div class="eyebrow">Measurement built in</div>
+        <p class="note" style="margin-top:10px">Every contact carries a stable <span class="fld">holdout_bucket</span>
+        so a 10 percent control can be held per trigger, and <span class="fld">last_triggered_at</span> per flow
+        so a frequency cap can be enforced across teams.</p></div>
+      <div class="card"><div class="eyebrow">Reversibility</div>
+        <p class="note" style="margin-top:10px">Every synced field is namespaced and every job is idempotent, so
+        the layer can be switched off and the program returns to exactly what it does today. Nothing here is a
+        one-way door.</p></div>
+    </div>
+  </div>
 </section><section class="panel" id="p-lifecycle">
-  <div class="eyebrow">06 &middot; Lifecycle</div>
+  <div class="eyebrow">07 &middot; Lifecycle</div>
   <h2 class="ttl">Eight sends the ticketing system<br>could already be firing.</h2>
   <p class="lede">
     Each one names the field that drives it. None require new data collection, a platform migration or leaving
@@ -899,7 +1129,7 @@
     </div>
   </div>
 </section><section class="panel" id="p-emails">
-  <div class="eyebrow">07 &middot; Email library</div>
+  <div class="eyebrow">08 &middot; Email library</div>
   <h2 class="ttl">UVA&rsquo;s own template. Five better sends.</h2>
   <p class="lede">
     Every mockup is built on UVA&rsquo;s real Eloqua template, not an interpretation of it. Same 600px table,
@@ -914,7 +1144,7 @@
     <div id="mwrap"></div>
   </div>
 </section><section class="panel" id="p-roadmap">
-  <div class="eyebrow">08 &middot; Roadmap</div>
+  <div class="eyebrow">09 &middot; Roadmap</div>
   <h2 class="ttl">Three pilots, ranked by<br>what could ship before the season ends.</h2>
   <p class="lede">
     There are seven home games left after Week 0. That is seven live tests, not a planning cycle. Everything
@@ -986,7 +1216,7 @@
     <p><strong><a href="mailto:kodie@brcg.co">kodie@brcg.co</a></strong></p>
   </div>
 </section><section class="panel" id="p-method">
-  <div class="eyebrow">09 &middot; Method &amp; sources</div>
+  <div class="eyebrow">10 &middot; Method &amp; sources</div>
   <h2 class="ttl">Where every number came from.</h2>
   <p class="lede">
     This teardown was assembled entirely from outside. No access was requested and none was used. Below is
