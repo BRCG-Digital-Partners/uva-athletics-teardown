@@ -812,10 +812,13 @@ HTML = f'''<!DOCTYPE html>
 </head>
 <body>
 
-<button id="mtoggle" aria-expanded="false" aria-label="Toggle navigation">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-    <path d="M3 6h18M3 12h18M3 18h18"/></svg>
-</button>
+<div class="menu" id="menu">
+  <button id="mtoggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="side">&#9776;</button>
+  <img class="b" src="assets/brcg-logo-white.png" alt="BRCG">
+  <span class="x"></span>
+  <span style="font-family:'Public Sans',sans-serif;font-weight:900;font-size:12px;letter-spacing:-.01em;color:hsl(var(--im-fg))">VIRGINIA</span>
+</div>
+<div id="scrim" hidden></div>
 
 <div id="app">
   <aside id="side">

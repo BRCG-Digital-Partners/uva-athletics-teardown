@@ -62,6 +62,7 @@
     if (panel) panel.classList.add('on');
     side.classList.remove('open');
     $('#mtoggle').setAttribute('aria-expanded', 'false');
+    if ($('#scrim')) $('#scrim').hidden = true;
     window.scrollTo(0, 0);
     if (history.replaceState) history.replaceState(null, '', '#' + p);
   }
@@ -77,9 +78,15 @@
     if (a) { e.preventDefault(); go(a.dataset.go); }
   });
 
-  $('#mtoggle').addEventListener('click', () => {
-    $('#mtoggle').setAttribute('aria-expanded', String(side.classList.toggle('open')));
-  });
+  const scrim = $('#scrim');
+  function setNav(open) {
+    side.classList.toggle('open', open);
+    $('#mtoggle').setAttribute('aria-expanded', String(open));
+    if (scrim) scrim.hidden = !open;
+  }
+  $('#mtoggle').addEventListener('click', () => setNav(!side.classList.contains('open')));
+  if (scrim) scrim.addEventListener('click', () => setNav(false));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') setNav(false); });
 
   /* deep link on load */
   const initial = (location.hash || '').replace('#', '');

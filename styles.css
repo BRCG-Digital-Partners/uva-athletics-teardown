@@ -528,3 +528,18 @@ ol.steps li::before{content:counter(s,decimal-leading-zero);position:absolute;le
 ol.steps li b{color:hsl(var(--foreground));font-weight:600}
 
 @media(max-width:1000px){.mailgrid{grid-template-columns:1fr}}
+
+/* ---------- mobile nav ----------
+   Scoped to min-width so it cannot clobber the .menu{display:flex} rule
+   inside the max-width:1000px block above. Source order matters here. */
+@media(min-width:1001px){
+  .menu{display:none !important}
+  #scrim{display:none !important}
+}
+@media(max-width:1000px){
+  #scrim{position:fixed;inset:0;z-index:35;background:hsl(var(--brcg-ink-deep)/.6);
+    backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+  #scrim[hidden]{display:none}
+  aside{box-shadow:0 0 60px -10px rgba(0,0,0,.7)}
+  .menu button{font-size:22px;line-height:1;padding:8px 4px}
+}
