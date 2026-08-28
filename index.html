@@ -1651,8 +1651,180 @@
     <div id="mstrip"></div>
     <div id="mwrap"></div>
   </div>
+</section><section class="panel" id="p-creative">
+  <div class="eyebrow">11 &middot; Creative system</div>
+  <h2 class="ttl">Twenty-two season assets,<br>generated from the ticketing data.</h2>
+  <p class="lede">
+    The same 1920&times;1080 units UVA ships today, produced by a template system instead of by hand. Change
+    the numbers, re-run, get the new set in about forty seconds. Every mark is the real file. Nothing here
+    draws or re-letters a logo.
+  </p>
+
+  <div class="grid g4 sec">
+    <div class="stat"><div class="k">Assets in one run</div><div class="v">22</div>
+      <div class="s">7 matchup, 7 urgency, 4 offer, 3 add-on, 1 season slate.</div></div>
+    <div class="stat acc"><div class="k">Rebuild time</div><div class="v">~40s</div>
+      <div class="s">One command. Deterministic, so the set is reproducible.</div></div>
+    <div class="stat"><div class="k">Logos drawn</div><div class="v">0</div>
+      <div class="s">V-Sabre from Paciolan&rsquo;s asset store, opponent marks from UVA&rsquo;s own S3.</div></div>
+    <div class="stat acc"><div class="k">Live-data units</div><div class="v">8</div>
+      <div class="s">Seven urgency assets and the slate read seat counts at render time.</div></div>
+  </div>
+
+  <div class="sec verdict">
+    <div class="eyebrow">Why it matters</div>
+    <h3>A static PNG cannot know the stadium is 11% empty.</h3>
+    <p>UVA&rsquo;s current assets are well made and completely frozen. A designer picks a number, sets it in
+    artwork, and that artwork ships. Which is how a &ldquo;Sell Out Scott&rdquo; graphic runs for seven weeks
+    while <strong>7,549 seats sit unsold</strong>. The creative has no idea.</p>
+    <p>Every unit below is generated from the same endpoints the emails would read. The sellout bar on an
+    urgency asset is the real figure at render time, not a guess baked into a file.
+    <strong>The creative and the ticketing system stop being two separate worlds.</strong></p>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><div class="eyebrow">Template 01 &middot; Matchup</div>
+      <h3>Game announce, one per home game</h3>
+      <p>Opponent name leads in type with the real mark as support, because the opponent files UVA serves are
+      only 60&times;60 and would not survive being blown up. An honest constraint that reads better than two
+      mismatched logos fighting each other.</p></div>
+    <div class="grid g3">
+      <figure style="margin:0">
+        <img src="creative/matchup-f01-ncstate.jpg" alt="Matchup &middot; NC State" loading="lazy"
+             style="width:100%;height:auto;display:block;border-radius:var(--radius);
+                    border:1px solid hsl(var(--border)/.6)">
+        <figcaption class="note" style="margin-top:9px;font-size:12px">Matchup &middot; NC State</figcaption>
+      </figure>
+      <figure style="margin:0">
+        <img src="creative/matchup-f02-norfolkstate.jpg" alt="Matchup &middot; Norfolk State" loading="lazy"
+             style="width:100%;height:auto;display:block;border-radius:var(--radius);
+                    border:1px solid hsl(var(--border)/.6)">
+        <figcaption class="note" style="margin-top:9px;font-size:12px">Matchup &middot; Norfolk State</figcaption>
+      </figure>
+      <figure style="margin:0">
+        <img src="creative/matchup-f03-delaware.jpg" alt="Matchup &middot; Delaware" loading="lazy"
+             style="width:100%;height:auto;display:block;border-radius:var(--radius);
+                    border:1px solid hsl(var(--border)/.6)">
+        <figcaption class="note" style="margin-top:9px;font-size:12px">Matchup &middot; Delaware</figcaption>
+      </figure></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><div class="eyebrow">Template 02 &middot; Urgency</div>
+      <h3>The one that cannot be made by hand</h3>
+      <p>Seats remaining, percentage sold, and a fill bar, all read live. Regenerate it the morning of a game
+      and it is correct that morning.</p></div>
+    <div class="grid g3">
+      <figure style="margin:0">
+        <img src="creative/urgency-f01-ncstate.jpg" alt="Urgency &middot; NC State &middot; 88.4% sold" loading="lazy"
+             style="width:100%;height:auto;display:block;border-radius:var(--radius);
+                    border:1px solid hsl(var(--border)/.6)">
+        <figcaption class="note" style="margin-top:9px;font-size:12px">Urgency &middot; NC State &middot; 88.4% sold</figcaption>
+      </figure>
+      <figure style="margin:0">
+        <img src="creative/urgency-f02-norfolkstate.jpg" alt="Urgency &middot; Norfolk State &middot; 60.4% sold" loading="lazy"
+             style="width:100%;height:auto;display:block;border-radius:var(--radius);
+                    border:1px solid hsl(var(--border)/.6)">
+        <figcaption class="note" style="margin-top:9px;font-size:12px">Urgency &middot; Norfolk State &middot; 60.4% sold</figcaption>
+      </figure>
+      <figure style="margin:0">
+        <img src="creative/urgency-f03-delaware.jpg" alt="Urgency &middot; Delaware &middot; 61.7% sold" loading="lazy"
+             style="width:100%;height:auto;display:block;border-radius:var(--radius);
+                    border:1px solid hsl(var(--border)/.6)">
+        <figcaption class="note" style="margin-top:9px;font-size:12px">Urgency &middot; Delaware &middot; 61.7% sold</figcaption>
+      </figure></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><div class="eyebrow">Template 03 &middot; Offer</div>
+      <h3>Price-led, using their real published prices</h3></div>
+    <div class="grid g3">
+      <figure style="margin:0">
+        <img src="creative/offer-mini-plan.jpg" alt="Mini plans &middot; $99" loading="lazy"
+             style="width:100%;height:auto;display:block;border-radius:var(--radius);
+                    border:1px solid hsl(var(--border)/.6)">
+        <figcaption class="note" style="margin-top:9px;font-size:12px">Mini plans &middot; $99</figcaption>
+      </figure>
+      <figure style="margin:0">
+        <img src="creative/offer-family-four.jpg" alt="Family four pack &middot; $25" loading="lazy"
+             style="width:100%;height:auto;display:block;border-radius:var(--radius);
+                    border:1px solid hsl(var(--border)/.6)">
+        <figcaption class="note" style="margin-top:9px;font-size:12px">Family four pack &middot; $25</figcaption>
+      </figure>
+      <figure style="margin:0">
+        <img src="creative/offer-endzone-pair.jpg" alt="Endzone pair &middot; $50" loading="lazy"
+             style="width:100%;height:auto;display:block;border-radius:var(--radius);
+                    border:1px solid hsl(var(--border)/.6)">
+        <figcaption class="note" style="margin-top:9px;font-size:12px">Endzone pair &middot; $50</figcaption>
+      </figure></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><div class="eyebrow">Template 04 &middot; Add-on</div>
+      <h3>Parking, tailgate, season tickets</h3></div>
+    <div class="grid g3">
+      <figure style="margin:0">
+        <img src="creative/addon-parking-digital.jpg" alt="Parking is digital" loading="lazy"
+             style="width:100%;height:auto;display:block;border-radius:var(--radius);
+                    border:1px solid hsl(var(--border)/.6)">
+        <figcaption class="note" style="margin-top:9px;font-size:12px">Parking is digital</figcaption>
+      </figure>
+      <figure style="margin:0">
+        <img src="creative/addon-tailgate.jpg" alt="Full-service tailgate" loading="lazy"
+             style="width:100%;height:auto;display:block;border-radius:var(--radius);
+                    border:1px solid hsl(var(--border)/.6)">
+        <figcaption class="note" style="margin-top:9px;font-size:12px">Full-service tailgate</figcaption>
+      </figure>
+      <figure style="margin:0">
+        <img src="creative/addon-season-tickets.jpg" alt="Season tickets" loading="lazy"
+             style="width:100%;height:auto;display:block;border-radius:var(--radius);
+                    border:1px solid hsl(var(--border)/.6)">
+        <figcaption class="note" style="margin-top:9px;font-size:12px">Season tickets</figcaption>
+      </figure></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><div class="eyebrow">Template 05 &middot; Season slate</div>
+      <h3>Every home game, by how full it is</h3>
+      <p>One asset that makes the whole season legible at a glance, and the one most likely to change week to
+      week.</p></div>
+    
+      <figure style="margin:0">
+        <img src="creative/slate-2026-home.jpg" alt="2026 home slate &middot; 156,879 seats available" loading="lazy"
+             style="width:100%;height:auto;display:block;border-radius:var(--radius);
+                    border:1px solid hsl(var(--border)/.6)">
+        <figcaption class="note" style="margin-top:9px;font-size:12px">2026 home slate &middot; 156,879 seats available</figcaption>
+      </figure>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><div class="eyebrow">The system</div><h3>How it is put together</h3></div>
+    <div class="grid g3">
+      <div class="card"><div class="eyebrow">Type</div>
+        <p class="note" style="margin-top:10px">Barlow Condensed 900 for statements, Public Sans for body,
+        JetBrains Mono for kickers and numerics. One face shouting, one explaining. Deliberately quieter than
+        the current work, which stacks an outlined display face over a photo with a drop shadow and reads busy
+        at thumbnail size in an inbox.</p></div>
+      <div class="card"><div class="eyebrow">Colour and texture</div>
+        <p class="note" style="margin-top:10px">Navy <code>#232D4B</code>, Cavalier orange
+        <code>#F84C1E</code>, white. Nothing else. A 135&deg; hatch at 4.5% white echoes the texture already in
+        UVA&rsquo;s email header, with two soft orange radials so the navy does not go flat.</p></div>
+      <div class="card"><div class="eyebrow">Structure</div>
+        <p class="note" style="margin-top:10px">Orange bleed bars left and right on every unit, mark top-left,
+        context top-right, footer line at the base. A fan should recognise the family from across a feed
+        without reading a word.</p></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="banner warn"><b>What this deliberately does not do.</b> These are type, colour and logo
+    compositions. UVA has a real photo library and real photographers, and the right move is to composite their
+    shots into these layouts rather than generate imagery. Synthetic football photography for a real programme
+    would look wrong to anyone who follows the team, and it is the one thing here that would undermine
+    everything else. The layouts already leave room for a photo plate behind the type.</div>
+  </div>
 </section><section class="panel" id="p-roadmap">
-  <div class="eyebrow">11 &middot; Roadmap</div>
+  <div class="eyebrow">12 &middot; Roadmap</div>
   <h2 class="ttl">Three pilots, ranked by<br>what could ship before the season ends.</h2>
   <p class="lede">
     There are seven home games left after Week 0. That is seven live tests, not a planning cycle. Everything
@@ -1724,7 +1896,7 @@
     <p><strong><a href="mailto:kodie@brcg.co">kodie@brcg.co</a></strong></p>
   </div>
 </section><section class="panel" id="p-method">
-  <div class="eyebrow">12 &middot; Method &amp; sources</div>
+  <div class="eyebrow">13 &middot; Method &amp; sources</div>
   <h2 class="ttl">Where every number came from.</h2>
   <p class="lede">
     This teardown was assembled entirely from outside. No access was requested and none was used. Below is

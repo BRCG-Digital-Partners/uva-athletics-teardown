@@ -17,6 +17,7 @@
     dataplan:  I('<path d="M4 5h16M4 12h16M4 19h10"/><circle cx="19" cy="19" r="2.5"/>'),
     events:    I('<path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/>'),
     catalog:   I('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/>'),
+    creative:  I('<circle cx="13.5" cy="6.5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="17" cy="14" r="2.5"/><circle cx="9" cy="19" r="2.5"/>'),
     lifecycle: I('<path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/>'),
     emails:    I('<rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>'),
     roadmap:   I('<path d="M4 19V6a2 2 0 0 1 2-2h3l2 2h7a2 2 0 0 1 2 2v11"/><path d="M2 19h20"/>'),
@@ -38,6 +39,7 @@
     { p: 'catalog',   t: 'Email catalog',  s: '27 sends this supports' },
     { p: 'lifecycle', t: 'Lifecycle',      s: 'Eight triggers already possible' },
     { p: 'emails',    t: 'Email library',  s: 'Five built emails' },
+    { p: 'creative',  t: 'Creative system', s: '22 season assets' },
     { g: 'Next' },
     { p: 'roadmap',   t: 'Roadmap',        s: 'Three pilots, this season' },
     { p: 'method',    t: 'Method & sources', s: 'Live vs illustrative' }
