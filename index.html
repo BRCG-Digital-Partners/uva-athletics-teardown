@@ -473,6 +473,49 @@
   </div>
 
   <div class="sec">
+    <h3 style="margin:30px 0 12px;font-size:16px">The website API &mdash; results and schedules, also open</h3>
+    <p class="note" style="margin:0 0 14px;max-width:88ch">A second surface entirely, on
+    <span class="fld">virginiasports.com/website-api/</span>. It is the Nuxt front end&rsquo;s own content API,
+    unauthenticated, and it covers the half the ticketing endpoints do not: who UVA is playing, where, ranked
+    what, and whether the game has finished. Paginated to 1,268 pages, so the full archive is reachable.</p>
+    <div class="card"><div class="tw"><table>
+      <thead><tr><th style="width:34%">Endpoint</th><th>Fields returned</th></tr></thead>
+      <tbody>
+        <tr><td><span class="fld">website-api/schedule-events</span>
+          <div class="note" style="margin-top:5px">52 fields. Takes schedule_id, per_page, page.</div></td>
+          <td><b style="color:hsl(var(--im-fg))">opponent_name</b>, opponent_school_name,
+          <b style="color:hsl(var(--im-fg))">opponent_logo_id</b>, opponent_ranking and UVA&rsquo;s own
+          <b style="color:hsl(var(--im-fg))">ranking</b>. Plus datetime, datetime_end, is_all_day, tba,
+          tba_text, location, venue, <b>venue_type</b> home / away / neutral, neutral_event_preposition,
+          <b>is_conference</b>, is_exhibition, <b>status</b> and status_text, tournament_id, second_opponent
+          fields for multi-team events, <b>pre_event_article_id</b> and <b>post_event_article_id</b>,
+          wmt_stats2_game_id and iframe URLs, <b>has_box_score</b> and box_score_url, presented_by_id and
+          presented_by_url.</td></tr>
+        <tr><td><span class="fld">website-api/schedule-events/&#123;id&#125;</span></td>
+          <td>The same 52 fields for one event. The natural lookup for a post-game trigger.</td></tr>
+        <tr><td><span class="fld">website-api/sports</span></td>
+          <td>id, name, abbreviation, gender, slug, schedule_id, default_roster_id, conference_id,
+          default_season_id, default_home_game_location, team_logo_id, icon_id, score_decimal_places,
+          calendar_code, presented_by_url and presented_by_logo_id.</td></tr>
+        <tr><td><span class="fld">website-api/schedules</span></td>
+          <td>id, name, sport_id, season_id, statistics_table, schedule_top_notes. The map from a sport to its
+          season schedule.</td></tr>
+        <tr><td><span class="fld">website-api/seasons</span></td>
+          <td>Season records that schedules and sports key against.</td></tr>
+      </tbody></table></div></div>
+    <div class="banner" style="margin-top:14px"><b>What this unlocks that ticketing alone cannot.</b>
+    A post-game send can name the opponent, both rankings, whether it was a conference game, and link the real
+    box score and recap. A pre-game send can lead with the matchup rather than the price. And it covers
+    <b>all fifteen sports</b>, which is what makes a cross-sport pull on the preference centre&rsquo;s twelve
+    declared sports actually buildable.</div>
+    <div class="banner warn" style="margin-top:12px"><b>One gap, stated plainly.</b> Final scores are not on
+    this payload. <span class="fld">status</span> flips to completed and a box score URL appears, but the score
+    itself lives on the separate <span class="fld">wmt.games</span> stats platform, which returned no public
+    JSON on the paths we tried. Treat the score as a dependency to confirm with UVA, not as something already
+    in hand.</div>
+  </div>
+
+  <div class="sec">
     <div class="sec-h"><div class="eyebrow">Real payload</div><h3>Event inventory</h3>
       <p>Trimmed from the live NC State response. One object carries the seat count, the theme, the on-sale
       time and the entire donation ladder.</p></div>
@@ -518,23 +561,9 @@
 
   <div class="sec">
     <div class="sec-h"><div class="eyebrow">Data template</div><h3>The merge-field contract</h3>
-      <p>What a lifecycle layer would expose to the template. Every field below exists today. None require new
-      data collection.</p></div>
-    <div class="card"><div class="tw"><table>
-      <thead><tr><th style="width:22%">Field</th><th style="width:28%">Source</th><th>Example</th>
-        <th style="width:104px">In use</th></tr></thead>
-      <tbody>
-        <tr><td><code>first_name</code></td><td>Eloqua preference form</td><td class="num">Kodie</td><td><span class="tag bad">No</span></td></tr>
-        <tr><td><code>sport_affinity[]</code></td><td>Eloqua hiddenField&ndash;12</td><td class="num">["football","mbb"]</td><td><span class="tag bad">No</span></td></tr>
-        <tr><td><code>drive_time</code></td><td>Eloqua zip + patron address</td><td class="num">20 min</td><td><span class="tag bad">No</span></td></tr>
-        <tr><td><code>last_seat</code></td><td>pac-api/orderhistory</td><td class="num">117 / K / 9-10</td><td><span class="tag bad">No</span></td></tr>
-        <tr><td><code>games_attended</code></td><td>Barcode scans</td><td class="num">4 of 7</td><td><span class="tag bad">No</span></td></tr>
-        <tr><td><code>priority_points</code></td><td>app/ws/patron myAccount</td><td class="num">84</td><td><span class="tag bad">No</span></td></tr>
-        <tr><td><code>upgrade_offer</code></td><td>order/ballena/upgrades</td><td class="num">Preferred, +$34</td><td><span class="tag bad">No</span></td></tr>
-        <tr><td><code>event.available</code></td><td>catalog/eventDetailMPT</td><td class="num">7549</td><td><span class="tag bad">No</span></td></tr>
-        <tr><td><code>event.pct_sold</code></td><td>Derived</td><td class="num">88.4</td><td><span class="tag bad">No</span></td></tr>
-        <tr><td><code>parking_sku</code></td><td>Order add-ons</td><td class="num">null</td><td><span class="tag bad">No</span></td></tr>
-      </tbody></table></div></div>
+      <p>Every field a lifecycle layer would expose to the template, with its source and whether it is used
+      today, is specified in <a href="#dataplan" data-go="dataplan">the data plan</a>. It is not repeated
+      here.</p></div>
   </div>
 
   <div class="sec">
@@ -722,130 +751,10 @@
   </div>
 
   <div class="sec">
-    <div class="sec-h"><div class="eyebrow">Full reference</div><h3>Every endpoint and what it returns</h3>
-      <p>Everything below was observed on UVA&rsquo;s own live implementation. Field names are the real ones.</p></div>
-
-    <h3 style="margin:26px 0 12px;font-size:16px">Event and inventory &mdash; no person identifier required</h3>
-    <div class="card"><div class="tw"><table>
-      <thead><tr><th style="width:34%">Endpoint</th><th>Fields returned</th></tr></thead>
-      <tbody>
-        <tr><td><span class="fld">pac-api/catalog/eventDetailMPT/&#123;season&#125;/&#123;event&#125;</span>
-          <div class="note" style="margin-top:5px">74 fields. The richest single call.</div></td>
-          <td><b style="color:hsl(var(--im-fg))">AVAILABLE</b>, <b style="color:hsl(var(--im-fg))">TOTALCAPACITY</b>,
-          SOLD_OUT, OVERRIDESOLDOUT, HASPROMO, SALEFROMDT, SALETODT, SALEFROMDTUTC, EVENTDT, EVENTDTFAC, EVENTDTTO,
-          EVENTTIMETYPE, TIMEZONE, EVENTNAME, ITEMNAME, SSEVENTNAME, FAC_CD, FAC_TITLE, SEASONCD, SEASON_NAME,
-          PRICETABLECD, PRICE, MINQTY, MAXQTY, MULTIPLEQTY, STUDENTMAXQTY, ALLOCATE, ALLOWSEATMAP, MAPTYPE,
-          POLICYCD, POLICYTYPE, IPROFILE, EVENT_MESSAGE, SEO_MESSAGE, HAS_BILL_PLANS, BILL_PLAN_POLICIES,
-          SUPPRESSFULLPAY, MARKERS, and <b>OFFERS_AND_ROUNDUPS</b> carrying ITEMNAME, DESCRIPTION,
-          ALLOWCUSTOMERAMOUNT, AMOUNTS, TC_MESSAGE, CONF_MESSAGE.</td></tr>
-        <tr><td><span class="fld">pac-api/seat-availability/event-id/&#123;acct&#125;:&#123;season&#125;:&#123;event&#125;/pricelevel</span></td>
-          <td>pricelevel[] with priceLevelCd, standard, PLAT. Plus holdCds[] and availablePriceLevels[].
-          Tells you which of the six tiers still has stock.</td></tr>
-        <tr><td><span class="fld">pac-api/seat-availability/event-id/&#123;&hellip;&#125;/markers</span></td>
-          <td>markers[] with id, name, title, description, icon, color, price, priceTypeCd, currency, terms,
-          active. This is where Platinum Seat and similar seat attributes live.</td></tr>
-        <tr><td><span class="fld">pac-api/catalog/sectionranges/price/&#123;season&#125;/&#123;event&#125;</span></td>
-          <td>sectionRange[], feeExclusions with price_types and use_bo_fees, tieredFeesActive.</td></tr>
-        <tr><td><span class="fld">pac-api/consumer/gql</span>
-          <div class="note" style="margin-top:5px">GraphQL. Every sport in one call.</div></td>
-          <td>discovery_upcomingEvents, 25 fields each: SEASONCD, SEASON_NAME, ITEMCD, ITEMNAME, SSEVENTNAME,
-          EVENTDT, EVENTDTFAC, EVENTDTTO, EVENTDTFACTO, FAC_TITLE, SOLD_OUT, BUY_ON_SS, BUY_ON_PS, SALEFROMDT,
-          SALEFROMDTUTC, TYPE, PRICE, HAS_BILL_PLANS, POLICYCD, POLICYTYPE, ISNEXTGEN, IPROFILE, HIDE_FACILITY,
-          HIDE_DATE_TIME, HIDE_TIME.</td></tr>
-        <tr><td><span class="fld">discovery_eventlist</span>
-          <div class="note" style="margin-top:5px">Server-rendered on the events page.</div></td>
-          <td>Everything in the GraphQL set plus <b>LOGO</b> and LOGO_MOBILE (opponent marks on UVA&rsquo;s own
-          S3), SEQUENCE, EVENT_MESSAGE, COMBO_EVENTS, MARKERS, AUTO_EXPAND.</td></tr>
-        <tr><td><span class="fld">SEGetEventInfo</span>
-          <div class="note" style="margin-top:5px">Legacy page, server-rendered.</div></td>
-          <td>priceLevelList, the six named tiers: Priority, Prime, Preferred, Choice, Select, Value (Upper
-          Level). priceTypeList: Family Pack 4&ndash;10, Reserved. areaList by facility section. Plus the
-          TicketItem record with event number, ticket code, configuration, facility and on-sale timestamp.</td></tr>
-        <tr><td><span class="fld">pac-api/catalog/evenueconfig</span></td>
-          <td>89 platform flags. Which capabilities are on, which are off, fee display, order-history window,
-          secondary-market host, student ticketing, promotions engine, donation offers, bill plans.</td></tr>
-      </tbody></table></div></div>
-
-    <h3 style="margin:30px 0 12px;font-size:16px">Patron &mdash; keyed to a Paciolan patron ID</h3>
-    <div class="card"><div class="tw"><table>
-      <thead><tr><th style="width:34%">Endpoint</th><th>Fields returned</th></tr></thead>
-      <tbody>
-        <tr><td><span class="fld">app/ws/patron/&#123;patronId&#125;/myAccount</span></td>
-          <td><b style="color:hsl(var(--im-fg))">custPriPoints</b>, <b style="color:hsl(var(--im-fg))">donPriPoints</b>,
-          <b style="color:hsl(var(--im-fg))">orderPriPtsTotal</b>, <b style="color:hsl(var(--im-fg))">priPtsTotal</b>.
-          Plus patronVo: resolvedname, fname, lname, patronId, cstmType, isStudent, and the entitlement flags
-          exchfl, transferfl, returnfl. Plus PtrnPhoneVos, PtrnEmailVos, PtrnEvLoginInfoVos and relatedSites for
-          the seat and parking selection portals.</td></tr>
-        <tr><td><span class="fld">pac-api/accounts</span>
-          <div class="note" style="margin-top:5px">45 paths.</div></td>
-          <td>accountType, accountName, accountStatusId, accountStatusName, isCustomerActive, loginEmail,
-          groupCode, cstmType, isStudent, dataAccountId, preferredLanguageId, primaryContactId, extIds,
-          profileIds, creditCards, bankAccount, and the ticketing and foundation address IDs
-          (tktMailAddrId, tktBillAddrId, fndMailAddrId, fndBillAddrId). primaryContact carries name.first,
-          name.middle, name.last, phones[], emails[], addresses.</td></tr>
-        <tr><td><span class="fld">pac-api/orderhistory</span></td>
-          <td>events[] &mdash; the purchase record by event. Drives win-back, partial-plan completion and the
-          real seat reference in a send.</td></tr>
-        <tr><td><span class="fld">pac-api/orderhistory/pendingTransfers</span></td>
-          <td>Transfers issued but not yet accepted. The clearest pre-renewal churn signal in the dataset.</td></tr>
-        <tr><td><span class="fld">pac-api/order/ballena/upgrades</span></td>
-          <td>Upgrade offers available against seats the account already owns. A personalised, revenue-positive
-          email that writes itself and has never been sent.</td></tr>
-        <tr><td><span class="fld">pac-api/memberships</span></td>
-          <td>total and items[]. Membership tier and status for benefit gating and renewal timing.</td></tr>
-        <tr><td><span class="fld">app/ws/user/context</span>
-          <div class="note" style="margin-top:5px">111 paths.</div></td>
-          <td>patronId, patronName, logon, transferHours, transferPostSaleSeasonVos[], isStubHubEnabled,
-          eChkThresholdAmt, storedccbafl, studentPinRequired, and the display and entitlement flags custprifl,
-          orderprifl, donprifl, priptfl, allowDonHistoryFlg, dispDonDtlFlg, dispDonPmtHistFlg. Plus the full
-          address and phone type configuration for the account.</td></tr>
-      </tbody></table></div></div>
   </div>
 
-
-    <h3 style="margin:30px 0 12px;font-size:16px">The website API &mdash; results and schedules, also open</h3>
-    <p class="note" style="margin:0 0 14px;max-width:88ch">A second surface entirely, on
-    <span class="fld">virginiasports.com/website-api/</span>. It is the Nuxt front end&rsquo;s own content API,
-    unauthenticated, and it covers the half the ticketing endpoints do not: who UVA is playing, where, ranked
-    what, and whether the game has finished. Paginated to 1,268 pages, so the full archive is reachable.</p>
-    <div class="card"><div class="tw"><table>
-      <thead><tr><th style="width:34%">Endpoint</th><th>Fields returned</th></tr></thead>
-      <tbody>
-        <tr><td><span class="fld">website-api/schedule-events</span>
-          <div class="note" style="margin-top:5px">52 fields. Takes schedule_id, per_page, page.</div></td>
-          <td><b style="color:hsl(var(--im-fg))">opponent_name</b>, opponent_school_name,
-          <b style="color:hsl(var(--im-fg))">opponent_logo_id</b>, opponent_ranking and UVA&rsquo;s own
-          <b style="color:hsl(var(--im-fg))">ranking</b>. Plus datetime, datetime_end, is_all_day, tba,
-          tba_text, location, venue, <b>venue_type</b> home / away / neutral, neutral_event_preposition,
-          <b>is_conference</b>, is_exhibition, <b>status</b> and status_text, tournament_id, second_opponent
-          fields for multi-team events, <b>pre_event_article_id</b> and <b>post_event_article_id</b>,
-          wmt_stats2_game_id and iframe URLs, <b>has_box_score</b> and box_score_url, presented_by_id and
-          presented_by_url.</td></tr>
-        <tr><td><span class="fld">website-api/schedule-events/&#123;id&#125;</span></td>
-          <td>The same 52 fields for one event. The natural lookup for a post-game trigger.</td></tr>
-        <tr><td><span class="fld">website-api/sports</span></td>
-          <td>id, name, abbreviation, gender, slug, schedule_id, default_roster_id, conference_id,
-          default_season_id, default_home_game_location, team_logo_id, icon_id, score_decimal_places,
-          calendar_code, presented_by_url and presented_by_logo_id.</td></tr>
-        <tr><td><span class="fld">website-api/schedules</span></td>
-          <td>id, name, sport_id, season_id, statistics_table, schedule_top_notes. The map from a sport to its
-          season schedule.</td></tr>
-        <tr><td><span class="fld">website-api/seasons</span></td>
-          <td>Season records that schedules and sports key against.</td></tr>
-      </tbody></table></div></div>
-    <div class="banner" style="margin-top:14px"><b>What this unlocks that ticketing alone cannot.</b>
-    A post-game send can name the opponent, both rankings, whether it was a conference game, and link the real
-    box score and recap. A pre-game send can lead with the matchup rather than the price. And it covers
-    <b>all fifteen sports</b>, which is what makes a cross-sport pull on the preference centre&rsquo;s twelve
-    declared sports actually buildable.</div>
-    <div class="banner warn" style="margin-top:12px"><b>One gap, stated plainly.</b> Final scores are not on
-    this payload. <span class="fld">status</span> flips to completed and a box score URL appears, but the score
-    itself lives on the separate <span class="fld">wmt.games</span> stats platform, which returned no public
-    JSON on the paths we tried. Treat the score as a dependency to confirm with UVA, not as something already
-    in hand.</div>
-
   <div class="sec">
-    <div class="banner warn"><b>One honest caveat about the patron endpoints.</b> What we observed were the
+    <div class="banner warn"><b>One honest caveat about the patron endpoints.</b> The full endpoint reference lives in <a href="#apis" data-go="apis">API surface</a>. What we observed were the
     fan-facing routes, reached through an ordinary logged-in browser session. Production integration would not
     replay session calls. It would use Paciolan&rsquo;s partner integration surface with server credentials,
     which is the part that is partner-gated and which UVA already has a commercial relationship for. These
